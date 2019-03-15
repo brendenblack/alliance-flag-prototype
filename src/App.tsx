@@ -11,6 +11,12 @@ const styles = (theme: Theme) => createStyles({
   container: {
     padding: theme.spacing.unit, // '1em',
   },
+  colourPicker: {
+
+  },
+  sigilPicker: {
+
+  }
 });
 
 export interface AppProps extends WithStyles<typeof styles> {
@@ -49,10 +55,14 @@ const App = withStyles(styles)(
           <CrestContainer 
             background={this.state.selectedBackgroundColour} />
 
-          <section >
+          <section className={this.props.classes.colourPicker}>
             <GithubPicker
               color={this.state.selectedBackgroundColour} 
               onChangeComplete={this.handleColourChange} />
+          </section>
+
+          <section className={this.props.classes.sigilPicker}>
+          
           </section>
 
       </div>
