@@ -4,6 +4,7 @@ import { render } from "react-dom";
 
 export interface CrestContainerProps extends WithStyles<typeof styles> {
     background?: string;
+    sigil?: JSX.Element;
 }
 
 export interface CrestContainerState {
@@ -36,6 +37,7 @@ const CrestContainer = withStyles(styles)(
             return (
                 <section className={this.props.classes.root} style={{ backgroundColor: this.props.background }}>
                     <Typography variant="h2">{this.props.background}</Typography>
+                    {this.props.sigil}
                 </section>
             );
         }
