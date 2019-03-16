@@ -51,10 +51,15 @@ const App = withStyles(styles)(
     });
   }
 
-  handleSigilChange(icon: JSX.Element) {
+  handleSigilChange(icon: React.ComponentType<SvgIcon>) {
+    const Icon = icon;
+    // https://stackoverflow.com/questions/49832457/how-to-add-additional-props-to-a-react-element-passed-in-as-a-prop
     this.setState({
       ...this.state,
         selectedIcon: icon
+    },
+    () => {
+      console.log('sigil is set', this.state.selectedIcon);
     });
   }
 
@@ -63,7 +68,8 @@ const App = withStyles(styles)(
       <div className={this.props.classes.container}>
 
           <CrestContainer 
-            background={this.state.selectedBackgroundColour} />
+            background={this.state.selectedBackgroundColour}
+            sigil={this.state.selectedIcon} />
 
           <section className={this.props.classes.colourPicker}>
             <GithubPicker

@@ -22,6 +22,10 @@ const styles = (theme:Theme) => createStyles({
         margin: 'auto',
         // marginTop: `calc(50vh - ${boxHeight / 2}px)`
     },
+    sigil: {
+        width: 240,
+        height: 240,
+    }
 });
 
 
@@ -29,15 +33,34 @@ const CrestContainer = withStyles(styles)(
     class extends React.Component<CrestContainerProps, CrestContainerState> {
         constructor(props: CrestContainerProps) {
             super(props);
+        
+            this.modifyChildren = this.modifyChildren.bind(this);
+        }
+    
+        modifyChildren(child: any) {
+            // const className = classNames(
+            //     child.props.className,
+            //     this.props.classes.sigil,
+            // );
+    
+            // const props = {
+            //     className
+            // };
+    
+            // return React.cloneElement(child, props);
         }
 
-
+        onComponentDidMount() {
+            
+        }
 
         render() {
             return (
                 <section className={this.props.classes.root} style={{ backgroundColor: this.props.background }}>
-                    <Typography variant="h2">{this.props.background}</Typography>
-                    {this.props.sigil}
+                    <div className={this.props.classes.sigil}>{this.props.sigil}</div>
+
+                    {React.Children.forEach(this.props.children, function(child) {
+                    })}
                 </section>
             );
         }
