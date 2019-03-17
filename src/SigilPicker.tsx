@@ -2,13 +2,12 @@ import React from "react";
 import { withStyles, createStyles, IconButton, Theme, WithStyles, SvgIcon } from "@material-ui/core";
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import AlarmIcon from '@material-ui/icons/Alarm';
-import CastIcon from '@material-ui/icons/Cast';
-import ComputerIcon from '@material-ui/icons/Computer';
-import DeviceHubIcon from '@material-ui/icons/DeviceHub';
+import { SvgIconProps } from "@material-ui/core/SvgIcon/SvgIcon";
+
 
 export interface SigilPickerProps extends WithStyles<typeof styles> {
-    onSigilChange(icon: React.ComponentType<SvgIcon>): void;
+    onSigilChange(icon: React.ComponentType<any>): void;
+    sigils: React.ComponentType<SvgIconProps>[];
 }
 
 export interface SigilPickerState {
@@ -16,13 +15,14 @@ export interface SigilPickerState {
     canMoveBackwards: boolean;
     canMoveForwards: boolean;
     index: number;
-    sigils: React.ComponentType<SvgIcon>[];
-    selectedIcon: React.ComponentType<SvgIcon>;
+    sigils: React.ComponentType<any>[];
+    selectedIcon: React.ComponentType<any>;
 }
 
 const styles = (theme: Theme) => createStyles({
     root: { 
-        display: 'inline',
+        display: 'inline-flex',
+        alignItems: 'center',
     },
     button: {
         margin: theme.spacing.unit,
@@ -35,30 +35,26 @@ const SigilPicker = withStyles(styles)(
         constructor(props: SigilPickerProps) {
             super(props);
 
-            const sigils = [
-                AlarmIcon, 
-                CastIcon, 
-                DeviceHubIcon, 
-                ComputerIcon,
-            ];
+            let initialSigil = this.props.sigils[0];
 
             this.state = {
                 canMoveBackwards: false,
-                canMoveForwards: sigils.length > 0,
+                canMoveForwards: this.props.sigils.length > 0,
                 index: 0,
-                sigils: sigils,
-                selectedIcon: sigils[0],
+                sigils: this.props.sigils,
+                selectedIcon: initialSigil,
             }
 
-            this.handleBackwardsClick = this.handleBackwardsClick.bind(this);
-            this.handleForwardsClick = this.handleForwardsClick.bind(this);
             this.canMoveForward = this.canMoveForward.bind(this);
             this.canMoveBackward = this.canMoveBackward.bind(this);
+
+            this.props.onSigilChange(initialSigil);
         }
 
-        handleBackwardsClick() {
+        navigate(change: number) {
             let currentIndex = this.state.index;
-            let newIndex = currentIndex - 1;
+            let newIndex = currentIndex + change;
+            console.log('new index from navigate method is ' + newIndex);
             this.setState({
                 ...this.state,
                 index: newIndex,
@@ -66,22 +62,7 @@ const SigilPicker = withStyles(styles)(
                 canMoveForwards: this.canMoveForward(newIndex),
             }, () => {
                 this.props.onSigilChange(this.state.sigils[newIndex]);
-                console.log(`index is set to ${this.state.index}`);
-            });
-        }
-
-        handleForwardsClick() {
-            let currentIndex = this.state.index;
-            let newIndex = currentIndex + 1;
-            console.log('new index is ' + newIndex);
-             this.setState({
-                ...this.state,
-                index: newIndex,
-                canMoveBackwards: this.canMoveBackward(newIndex),
-                canMoveForwards: this.canMoveForward(newIndex),
-            }, () => {
-                this.props.onSigilChange(this.state.sigils[newIndex]);
-                console.log(`index is set to ${this.state.index}`);
+                console.log(`index is set to ${this.state.index} from navigate method`);
             });
         }
 
@@ -94,29 +75,29 @@ const SigilPicker = withStyles(styles)(
         }
 
         render() {
+            let Sigil = this.state.sigils[this.state.index];
+
             return (
                 <div className={this.props.classes.root}>
-                <div>
+
                     <IconButton 
                         color="secondary" 
                         className={this.props.classes.button}
-                        onClick={this.handleBackwardsClick}
+                        onClick={this.navigate.bind(this, -1)}
                         disabled={!this.state.canMoveBackwards}>
                         <KeyboardArrowLeftIcon />
                     </IconButton>
 
-                    <div>
-                        {this.state.sigils[this.state.index]}
-                    </div> 
-
+                        <Sigil />
+             
                     <IconButton 
                         color="secondary" 
                         className={this.props.classes.button}
-                        onClick={this.handleForwardsClick}
+                        onClick={this.navigate.bind(this, 1)}
                         disabled={!this.state.canMoveForwards}>
                         <KeyboardArrowRightIcon />
                     </IconButton>
-            </div>
+ 
             </div>);
         }
     }

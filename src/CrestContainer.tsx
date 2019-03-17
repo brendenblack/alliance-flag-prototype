@@ -1,10 +1,13 @@
 import { createStyles, WithStyles, withStyles, Typography, Theme } from "@material-ui/core";
-import React from "react";
+import React, { ReactComponentElement } from "react";
 import { render } from "react-dom";
+import SvgIcon, { SvgIconProps } from "@material-ui/core/SvgIcon";
+import { red } from "@material-ui/core/colors";
 
 export interface CrestContainerProps extends WithStyles<typeof styles> {
     background?: string;
-    sigil?: JSX.Element;
+    foreground?: string;
+    sigil?: React.ComponentType<any>;
 }
 
 export interface CrestContainerState {
@@ -14,17 +17,26 @@ export interface CrestContainerState {
 const boxWidth = 600;
 const boxHeight = 600;
 
+const sigilHeight = 240;
+const sigilWidth = 240;
+
 const styles = (theme:Theme) => createStyles({
     root: {
         width: boxWidth,
         height: boxHeight,
         backgroundColor: theme.palette.background.default,
         margin: 'auto',
+        display: 'flex',
+        justifyContent: 'center',
         // marginTop: `calc(50vh - ${boxHeight / 2}px)`
     },
     sigil: {
-        width: 240,
-        height: 240,
+        width: sigilWidth,
+        height: sigilHeight,
+        margin: 'auto',
+    },
+    centered: {
+
     }
 });
 
@@ -34,35 +46,29 @@ const CrestContainer = withStyles(styles)(
         constructor(props: CrestContainerProps) {
             super(props);
         
-            this.modifyChildren = this.modifyChildren.bind(this);
-        }
-    
-        modifyChildren(child: any) {
-            // const className = classNames(
-            //     child.props.className,
-            //     this.props.classes.sigil,
-            // );
-    
-            // const props = {
-            //     className
-            // };
-    
-            // return React.cloneElement(child, props);
-        }
-
-        onComponentDidMount() {
-            
+          
         }
 
         render() {
-            return (
-                <section className={this.props.classes.root} style={{ backgroundColor: this.props.background }}>
-                    <div className={this.props.classes.sigil}>{this.props.sigil}</div>
+            if (this.props.sigil) {
+                
+                let s: JSX.Element;
+                if (this.props.sigil) {
+                    let Sigil = this.props.sigil;
+                    s = <Sigil className={this.props.classes.sigil} style={{color: this.props.foreground}} />
+                } else {
+                    s = <span>?</span>
+                }
 
-                    {React.Children.forEach(this.props.children, function(child) {
-                    })}
-                </section>
-            );
+                return (
+                    <section className={this.props.classes.root} style={{ backgroundColor: this.props.background }}>
+                        {s}
+                    </section>
+                );
+            } else {
+                return <section className={this.props.classes.root} style={{ backgroundColor: this.props.background }}></section>
+            }
+            
         }
     }
 );
